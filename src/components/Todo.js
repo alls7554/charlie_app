@@ -177,7 +177,7 @@ export default function Todo() {
                         <Text style={styles.modalText}>Delete To do?</Text>
                         <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
                           <TouchableOpacity
-                            style={[styles.button, styles.buttonClose]}
+                            style={[styles.button, styles.buttonCancel]}
                             onPress={() => setModalVisible(!modalVisible)}
                           >
                             <Text style={styles.textStyle}>Cancel</Text>
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
   header: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-    marginTop: 100,
+    marginTop: 10,
   },
   btnText: {
     fontSize: 38,
@@ -254,7 +254,7 @@ const styles = StyleSheet.create({
     backgroundColor: theme.todoBg,
     marginBottom: 10,
     paddingVertical: 20,
-    borderRadius: 15
+    borderRadius: 10
   },
   todoCheckBox: {
     paddingHorizontal:10
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     minWidth: 200,
     maxWidth: 220,
-    paddingVertical: 30,
+    // paddingVertical: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
     shadowColor: '#000',
@@ -300,13 +300,14 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     marginHorizontal: 10,
+    marginVertical:20,
     elevation: 2
   },
   buttonDelete: {
     backgroundColor: '#DF2525',
   },
-  buttonClose: {
-    backgroundColor: '#2196F3'
+  buttonCancel: {
+    backgroundColor: '#2196F3',
   },
   textStyle: {
     color: 'white',
@@ -314,8 +315,9 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   modalText: {
-    marginBottom: 15,
-    fontSize: 25,
+    marginBottom: 25,
+    marginVertical: 20,
+    fontSize: 18,
     textAlign: 'center'
   }
 })

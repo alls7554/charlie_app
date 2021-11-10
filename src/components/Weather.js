@@ -1,8 +1,7 @@
 import * as Location from 'expo-location';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import {
   Fontisto,
   FontAwesome,
@@ -12,20 +11,21 @@ import {
 } from '@expo/vector-icons';
 import {
   ActivityIndicator,
-  Alert,
   Dimensions,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View
 } from 'react-native';
 import moment from 'moment';
 import 'moment/locale/ko'
+import Helper from './Helper';
+import { theme } from '../common/color';
+import { WEATHER_API_KEY } from '../common/config';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-const API_KEY = 'faaaddda964c72c3f28ac3f09fd4e83d';
+const HELPER_KEY = '@helper';
 
 const icons = {
   Clouds: 'cloudy',
@@ -38,17 +38,19 @@ const icons = {
 };
 
 export default function Weather() {
+  
   const [city, setCity] = useState('Loading...');
   const [days, setDays] = useState([]);
   const [ok, setOk] = useState(true);
   const [helper, setHelper] = useState(true);
-  const [modalVisible, setModalVisible] = useState(true);
-
+  
   const getWeather = async () => {
     const { granted } = await Location.requestForegroundPermissionsAsync();
+
     if (!granted) {
       setOk(false);
     }
+
     const { coords: { latitude, longitude } } = await Location.getCurrentPositionAsync({ accuracy: 5 });
     const location = await Location.reverseGeocodeAsync(
       { latitude, longitude },
@@ -57,19 +59,20 @@ export default function Weather() {
 
     setCity(location[0].city);
 
-    // const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alert&appid=${API_KEY}&units=metric`);
-    // const json = await response.json();
-    // setDays(json.daily);
-    // console.log(json.daily);
+    const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alert&appid=${WEATHER_API_KEY}&units=metric`);
+    const json = await response.json();
+    setDays(json.daily);
   }
 
-  useEffect(() => {
-    moment.locale('ko');
-    getWeather();
-  }, []);
-
-  const saveHelper = () => {
-
+  const loadHelperState = async () => {
+    try {
+      const s = await AsyncStorage.getItem(HELPER_KEY);
+      if(s !== null) {
+        setHelper(JSON.parse(s));
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const windDirection = (deg) => {
@@ -112,10 +115,15 @@ export default function Weather() {
     return result;
   }
 
+  useState(() => {
+    moment.locale('ko');
+    loadHelperState();
+    getWeather();
+  }, []);
+
   return (
     <View style={styles.container}>
       <StatusBar style='light' />
-      <View style={{height:getStatusBarHeight()}}></View>
       <View style={styles.city}>
         <Text style={styles.cityName}>{city}</Text>
       </View>
@@ -124,14 +132,11 @@ export default function Weather() {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.weather}
+        scrollEventThrottle={1}
       >
-        {/* {helper ? 
-          <Modal>
-            <View style={{ flex: 1 }}>
-              <Text>I am the modal content!</Text>
-            </View>
-          </Modal> : null
-        } */}
+        {
+          helper ? <Helper /> : null
+        }
         {
           days.length === 0 ?
             (<View style={{ ...styles.day, alignItems: 'center', justifyContent:'center' }}>
@@ -165,57 +170,57 @@ export default function Weather() {
                   </View>
                   <ScrollView style={{flex: 0.2}}>
                     <View style={styles.shortly}>
-                      <Text style={styles.tinyText}>최고 / 최저</Text>
+                      <Text style={styles.detailsTinyText}>최고 / 최저</Text>
                       <View style={styles.details}>
-                        <FontAwesome style={styles.tinyIcon} name="long-arrow-up" size={28} color="red" />
+                        <FontAwesome style={styles.tinyIcon} name="long-arrow-up" size={20} color="red" />
                         <Text style={styles.detailsText}>
                           {parseFloat(day.temp.max).toFixed(1)}°C
                         </Text>
-                        <FontAwesome style={styles.tinyIcon} name="long-arrow-down" size={28} color="#46bcf3" />
+                        <FontAwesome style={styles.tinyIcon} name="long-arrow-down" size={20} color="#46bcf3" />
                         <Text style={styles.detailsText}>
                           {parseFloat(day.temp.min).toFixed(1)}°C
                         </Text>
                       </View>
                     </View>
                     <View style={styles.shortly}>
-                      <Text style={styles.tinyText}>일출 / 일몰</Text>
+                      <Text style={styles.detailsTinyText}>일출 / 일몰</Text>
                       <View style={styles.details}>
-                        <Feather style={styles.tinyIcon} name="sunrise" size={28} color="white" /> 
+                        <Feather style={styles.tinyIcon} name="sunrise" size={20} color="white" /> 
                         <Text style={styles.detailsText}>
                           {moment(day.sunrise * 1000).format('HH:mm')}
                         </Text>
-                        <MaterialCommunityIcons style={styles.tinyIcon} name="weather-sunset" size={28} color="white" /> 
+                        <MaterialCommunityIcons style={styles.tinyIcon} name="weather-sunset" size={20} color="white" /> 
                         <Text style={styles.detailsText}>
                           {moment(day.sunset * 1000).format('HH:mm')}
                         </Text>
                       </View>
                     </View>
                     <View style={styles.shortly}>
-                      <Text style={styles.tinyText}>풍향 / 풍속</Text>
+                      <Text style={styles.detailsTinyText}>풍향 / 풍속</Text>
                       <View style={styles.details}>
-                        <FontAwesome style={{ ...styles.tinyIcon, transform: [{rotate: `${windDirection(day.wind_deg).rotate}deg`}] }} name="location-arrow" size={28} color="white" />
+                        <FontAwesome style={{ ...styles.tinyIcon, transform: [{rotate: `${windDirection(day.wind_deg).rotate}deg`}] }} name="location-arrow" size={20} color="white" />
                           <Text style={styles.detailsText}>
                             {windDirection(day.wind_deg).text}
                           </Text>
-                        <Feather style={styles.tinyIcon} name="wind" size={28} color="white" />
+                        <Feather style={styles.tinyIcon} name="wind" size={20} color="white" />
                         <Text style={styles.detailsText}>
                           {day.wind_speed}
                         </Text>
                       </View>
                     </View>
                     <View style={styles.shortly}>
-                      <Text style={styles.tinyText}>습도</Text>
+                      <Text style={styles.detailsTinyText}>습도</Text>
                       <View style={{ ...styles.details, width:'50%' }}>
-                        <SimpleLineIcons style={styles.tinyIcon} name="drop" size={28} color="white" />
+                        <SimpleLineIcons style={styles.tinyIcon} name="drop" size={20} color="white" />
                         <Text style={styles.detailsText}>
                           {day.humidity}%
                         </Text>
                       </View>
                     </View>
                     <View style={styles.shortly}>
-                      <Text style={styles.tinyText}>자외선지수</Text>
+                      <Text style={styles.detailsTinyText}>자외선지수</Text>
                       <View style={{ ...styles.details, width:'50%' }}>
-                        <MaterialCommunityIcons style={styles.tinyIcon} name="weather-sunny-alert" size={28} color="white" />
+                        <MaterialCommunityIcons style={styles.tinyIcon} name="weather-sunny-alert" size={20} color="white" />
                         <Text style={styles.detailsText}>
                           {ultraViolet(day.uvi)}
                         </Text>
@@ -235,7 +240,7 @@ export default function Weather() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#161B22',
+    backgroundColor: theme.bg,
   },
   city: {
     flex: 0.5,
@@ -256,7 +261,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   shortly: {
-    backgroundColor: '#ffffff6a',
+    backgroundColor: theme.todoBg,
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -281,6 +286,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around'
   },
+  detailsTinyText: {
+    fontSize: 18,
+    color: "white",
+    fontWeight: "500",
+  },
   tinyText: {
     fontSize: 25,
     color: "white",
@@ -292,52 +302,7 @@ const styles = StyleSheet.create({
     marginTop: 8
   },
   detailsText: {
-    fontSize: 34,
+    fontSize: 26,
     color: 'white'
   },
-  centeredView: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 22
-  },
-  modalView: {
-    backgroundColor: 'white',
-    borderRadius: 20,
-    minWidth: 200,
-    maxWidth: 220,
-    // paddingVertical: 30,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5
-  },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    marginHorizontal: 10,
-    elevation: 2
-  },
-  buttonDelete: {
-    backgroundColor: '#DF2525',
-  },
-  buttonClose: {
-    backgroundColor: '#2196F3'
-  },
-  textStyle: {
-    color: 'white',
-    fontWeight: 'bold',
-    textAlign: 'center'
-  },
-  modalText: {
-    marginBottom: 15,
-    fontSize: 25,
-    textAlign: 'center'
-  }
 });
