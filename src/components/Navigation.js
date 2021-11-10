@@ -50,7 +50,7 @@ const Navigation = () => {
               />
            ),
         }} />
-        <Drawer.Screen name="Todo" component={Todo} options={{
+        <Drawer.Screen name="할일" component={Todo} options={{
            drawerIcon: ({focused, size}) => (
               <AntDesign
                  name={focused ? 'checksquare' : 'checksquareo'}

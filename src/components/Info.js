@@ -6,15 +6,17 @@ export default function Info() {
   return (
     <View style={styles.container}>
       <View style={styles.infoTitle}>
-        <Text style={styles.infoTitleText}>Weather & Todo</Text>
+        <Text style={styles.infoTitleText}>Living App</Text>
       </View>
-      <View style={styles.infoDesc}>
+      <View style={{ ...styles.infoDesc, justifyContent:'center' }}>
         <Text style={styles.infoDescText}></Text>
         <Text style={styles.infoDescText}>경성대학교 소프트웨어학과</Text>
         <Text style={styles.infoDescText}>2015742054 박철오</Text>
         <Text style={styles.infoDescText}>모바일웹프로그래밍</Text>
-
+      </View>
+      <View style={styles.infoDesc}>
         <Text style={styles.infoDescText}>날씨 API : OpenWeather</Text>
+        <Text style={styles.infoDescText}>뉴스 API : NewsAPI</Text>
       </View>
       <View style={styles.copy}>
         <Text style={styles.copyright}>2021 &copy; 박철오</Text>
@@ -31,15 +33,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#161B22',
   },
   infoTitle: {
-    flex: 1,
+    flex: 0.5,
     flexDirection:'row',
     justifyContent: "center",
     alignItems: 'center',
   },
   infoDesc: {
-    flex: 3,
-    // backgroundColor:'tomato',
-    justifyContent: "center",
+    flex: 1,
     alignItems: 'center',
   },
   infoTitleText: {

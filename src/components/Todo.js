@@ -9,11 +9,11 @@ import {
   ScrollView,
   ActivityIndicator,
   Alert,
-  Button,
   Modal
 } from 'react-native';
 import { theme } from '../common/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { v4 as uuidv4 } from 'uuid';
 import { FontAwesome, Entypo } from '@expo/vector-icons';
 
 const STORAGE_KEY = '@toDos'
@@ -62,7 +62,7 @@ export default function Todo() {
     // });
     const newTodos = {
       ...todos,
-      [Date.now()]: {
+      [uuidv4()]: {
         text, working, done: false
     }}
     setTodos(newTodos);
@@ -97,7 +97,7 @@ export default function Todo() {
   const updateTodo = async () => {
     const newTodos = {...todos}
     newTodos[updateKey].text = updateText
-    console.log(newTodos);
+
     setTodos(newTodos);
     setEditing(prev =>!prev)
     await saveTodo(newTodos);
@@ -203,10 +203,10 @@ export default function Todo() {
                   {todos[key].text}
                 </Text>
                 <TouchableOpacity style={styles.update} onPress={() => toggleEditing(key)}>
-                  <FontAwesome name="pencil" size={24} color={todos[key].done ? theme.grey : 'white'} />
+                  <FontAwesome name="pencil" size={20} color={todos[key].done ? theme.grey : 'white'} />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.delete} onPress={() => setModalVisible(!modalVisible)}>
-                  <FontAwesome name="trash" size={24} color={todos[key].done ? theme.grey : 'white'} />  
+                  <FontAwesome name="trash" size={20} color={todos[key].done ? theme.grey : 'white'} />  
                 </TouchableOpacity>
               </View> : null
           )))
