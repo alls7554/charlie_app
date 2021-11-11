@@ -121,7 +121,6 @@ export default function Todo() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style='light' />
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
           <Text style={{ ...styles.btnText, color: working ? 'white' : theme.grey}}>Todo</Text>
@@ -211,6 +210,7 @@ export default function Todo() {
               </View> : null
           )))
       }</ScrollView>
+    <StatusBar style='light' />
     </View>
   );
 }

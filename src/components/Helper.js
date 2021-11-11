@@ -1,7 +1,17 @@
 import React, { useRef, useState } from 'react';
 import Modal from 'react-native-modal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Animated, Button, Image, ScrollView, Text, View, StyleSheet, Dimensions, } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import {
+  Animated,
+  Image,
+  ScrollView,
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
@@ -35,7 +45,7 @@ export default function Helper() {
       style={styles.centeredView}
     >
       <View style={styles.modalView}>
-        <Text style={{fontSize: 28, textAlign:'center', fontWeight: '600'}}>사용법</Text>
+        {/* <Text style={{fontSize: 28, textAlign:'center', fontWeight: '600'}}>사용법</Text> */}
         <ScrollView
           horizontal={true}
           pagingEnabled
@@ -79,10 +89,17 @@ export default function Helper() {
           })}
         </View>
         <View style={styles.modalBottomView}>
-          <Button title="다시 보지 않기" onPress={neverViewModal} />
-          <Button title="닫기" onPress={closeModal} />
+          <TouchableOpacity onPress={neverViewModal}>
+            <Text style={{color: '#007AFF', margin: 8, fontSize: 16}}>다시 보지 않기</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={closeModal}>
+            <Text style={{color: '#007AFF', margin: 8, fontSize: 16}}>닫기</Text>
+          </TouchableOpacity>
+          {/* <Button title="다시 보지 않기" onPress={neverViewModal} /> */}
+          {/* <Button title="닫기" onPress={closeModal} /> */}
         </View>
       </View>
+      <StatusBar style='light'/>
     </Modal>
   )
 }

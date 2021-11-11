@@ -1,6 +1,7 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Button, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Image } from 'react-native';
+import React, { useState } from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { Text, View, StyleSheet, TouchableOpacity, ScrollView, Dimensions, ActivityIndicator, Image } from 'react-native';
 import { theme } from '../common/color';
 import { NEWS_API_KEY } from '../common/config';
 import usePromise from '../common/usePromise';
@@ -45,7 +46,7 @@ export default function News() {
   const [loading, response, error] = usePromise(() => {
     const query = currentCategory === 'all' ? '' : `&category=${currentCategory}`;
     return axios.get(
-      `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=a0268e16656e44959deb0c2ad9ec3936`
+      `https://newsapi.org/v2/top-headlines?country=kr${query}&apiKey=${NEWS_API_KEY}`
     );
   }, [currentCategory]);
  
@@ -63,7 +64,7 @@ export default function News() {
         )}
       </View>
       <ScrollView
-        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollViewContainer}
       >
         {loading ?
@@ -81,6 +82,7 @@ export default function News() {
           ))
         } 
       </ScrollView>
+    <StatusBar style='light' />
     </View>
   )
 

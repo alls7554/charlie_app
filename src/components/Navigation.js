@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, Button } from 'react-native';
-import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
@@ -42,13 +41,13 @@ const Navigation = () => {
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
         <Drawer.Screen name="날씨" component={Weather} options={{
-           drawerIcon: ({focused, size}) => (
-              <AntDesign
-                 name={focused ? 'cloud' : 'cloudo'}
-                 size={size}
-                 color={focused ? 'tomato' : 'grey'}
-              />
-           ),
+          drawerIcon: ({focused, size}) => (
+            <AntDesign
+                name={focused ? 'cloud' : 'cloudo'}
+                size={size}
+                color={focused ? 'tomato' : 'grey'}
+            />
+          ),
         }} />
         <Drawer.Screen name="할일" component={Todo} options={{
            drawerIcon: ({focused, size}) => (

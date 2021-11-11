@@ -117,13 +117,12 @@ export default function Weather() {
 
   useState(() => {
     moment.locale('ko');
-    loadHelperState();
+    // loadHelperState();
     getWeather();
   }, []);
 
   return (
     <View style={styles.container}>
-      <StatusBar style='light' />
       <View style={styles.city}>
         <Text style={styles.cityName}>{city}</Text>
       </View>
@@ -168,7 +167,10 @@ export default function Weather() {
                     </View>
                     <Text style={styles.description}>{day.weather[0].main}</Text>
                   </View>
-                  <ScrollView style={{flex: 0.2}}>
+                  <ScrollView
+                    style={{ flex: 0.2 }}
+                    showsVerticalScrollIndicator={false}
+                  >
                     <View style={styles.shortly}>
                       <Text style={styles.detailsTinyText}>최고 / 최저</Text>
                       <View style={styles.details}>
@@ -232,6 +234,7 @@ export default function Weather() {
             )
         }
       </ScrollView>
+      <StatusBar style='light'/>
     </View>
   );
 }
