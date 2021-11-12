@@ -8,13 +8,14 @@ import {
   TextInput,
   ScrollView,
   ActivityIndicator,
-  Alert,
   Modal
 } from 'react-native';
 import { theme } from '../common/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
 import { FontAwesome, Entypo } from '@expo/vector-icons';
+import moment from 'moment';
+moment.locale('ko');
 
 const STORAGE_KEY = '@toDos'
 const STATE_KEY = '@state'
@@ -30,7 +31,7 @@ export default function Todo() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const travel = () => setWorking(false)
+  const memo = () => setWorking(false)
   const work = () => setWorking(true)
 
   const saveState = async () => {
@@ -62,8 +63,8 @@ export default function Todo() {
     // });
     const newTodos = {
       ...todos,
-      [uuidv4()]: {
-        text, working, done: false
+      [Date.now()]: {
+        text, working, date: moment(new Date()).format('yyyy-MM-DD(dd) hh:mm:ss'), done: false,
     }}
     setTodos(newTodos);
     await saveTodo(newTodos);
@@ -97,16 +98,19 @@ export default function Todo() {
   const updateTodo = async () => {
     const newTodos = {...todos}
     newTodos[updateKey].text = updateText
+    newTodos[updateKey].date = moment(new Date()).format('yyyy-MM-DD(dd) hh:mm:ss')
 
     setTodos(newTodos);
     setEditing(prev =>!prev)
     await saveTodo(newTodos);
   }
-  const deleteTodo = async (key) => {
+  const deleteTodo = async () => {
     const newTodos = {...todos}
-    delete newTodos[key]
+    delete newTodos[updateKey]
+
     setTodos(newTodos);
     await saveTodo(newTodos);
+    setUpdateKey();
     setModalVisible(false);
   }
 
@@ -117,16 +121,21 @@ export default function Todo() {
 
   useEffect(() => {
     saveState(working);
-  }, [working])
+  }, [working]);
+
+
+  useEffect(() => {
+    console.log(todos);
+  }, [todos]);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={work}>
-          <Text style={{ ...styles.btnText, color: working ? 'white' : theme.grey}}>Todo</Text>
+          <Text style={{ ...styles.btnText, color: working ? 'white' : theme.grey}}>To Do</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={travel}>
-          <Text style={{ ...styles.btnText, color: !working ? 'white' : theme.grey}}>Travel</Text>
+        <TouchableOpacity onPress={memo}>
+          <Text style={{ ...styles.btnText, color: !working ? 'white' : theme.grey}}>Memo</Text>
         </TouchableOpacity>
       </View>
       <TextInput
@@ -134,7 +143,7 @@ export default function Todo() {
         onChangeText={onChangeText}
         onSubmitEditing={addTodo}
         returnKeyType='done'
-        placeholder={working ? 'Add a To Do' : 'Where do you want to go?'}
+        placeholder={working ? 'Add a To Do' : 'Anything Memo'}
         style={styles.input}
       />
       <ScrollView>{
@@ -161,13 +170,12 @@ export default function Todo() {
                     />
                   </View>
                 ) :
-              <View style={styles.todo} key={key}>
+                <View style={styles.todo} key={key}>
                   <Modal
                     animationType="fade"
                     transparent={true}
                     visible={modalVisible}
                     onRequestClose={() => {
-                      Alert.alert("Modal has been closed.");
                       setModalVisible(!modalVisible);
                     }}
                   >
@@ -183,32 +191,40 @@ export default function Todo() {
                           </TouchableOpacity>
                           <TouchableOpacity
                             style={[styles.button, styles.buttonDelete]}
-                            onPress={() => deleteTodo(key)}
+                            onPress={() => deleteTodo()}
                           >
                             <Text style={styles.textStyle}>Delete</Text>
                           </TouchableOpacity>
                         </View>  
                       </View>
                     </View>
-                  </Modal> 
-                <FontAwesome
-                  style={styles.todoCheckBox}
-                  name={todos[key].done ? 'check-square-o' : 'square-o'}
-                  size={24}
-                  color={todos[key].done ? theme.grey:"white"}
-                  onPress={() => { toggleTodo(key) }}
-                />
-                <Text style={ todos[key].done ? {...styles.todoText,  textDecorationLine: 'line-through', color:theme.grey }:  styles.todoText}>
-                  {todos[key].text}
-                </Text>
-                <TouchableOpacity style={styles.update} onPress={() => toggleEditing(key)}>
-                  <FontAwesome name="pencil" size={20} color={todos[key].done ? theme.grey : 'white'} />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.delete} onPress={() => setModalVisible(!modalVisible)}>
-                  <FontAwesome name="trash" size={20} color={todos[key].done ? theme.grey : 'white'} />  
-                </TouchableOpacity>
-              </View> : null
-          )))
+                  </Modal>
+                  <View style={styles.udcontainer}>
+                      <TouchableOpacity style={styles.delete} onPress={() => { setUpdateKey(key); setModalVisible(!modalVisible); }}>
+                      <FontAwesome name="trash" size={20} color='white' />  
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.update} onPress={() => toggleEditing(key)}>
+                      <FontAwesome name="pencil" size={20} color='white' />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.contents}>
+                    {todos[key].working  ?   
+                    <FontAwesome
+                      style={styles.todoCheckBox}
+                      name={todos[key].done ? 'check-square-o' : 'square-o'}
+                      size={24}
+                      color={todos[key].done ? theme.grey:"white"}
+                      onPress={() => { toggleTodo(key) }}
+                    /> : null}
+                    <Text style={ todos[key].done ? {...styles.todoText,  textDecorationLine: 'line-through', color:theme.grey }:  styles.todoText}>
+                      {todos[key].text}
+                    </Text>
+                    </View>
+                    <View style={{flexDirection:'row-reverse', paddingHorizontal: 10}}>
+                      <Text style={{color : todos[key].done ? theme.grey:"white" }}>{todos[key].date}</Text>
+                    </View>
+                </View> : null
+            )))
       }</ScrollView>
     <StatusBar style='light' />
     </View>
@@ -249,12 +265,12 @@ const styles = StyleSheet.create({
     fontSize: 72
   },
   todo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flex: 1,
     backgroundColor: theme.todoBg,
     marginBottom: 10,
-    paddingVertical: 20,
-    borderRadius: 10
+    paddingHorizontal: 5,
+    borderRadius: 10,
+    minHeight: 100,
   },
   todoCheckBox: {
     paddingHorizontal:10
@@ -263,15 +279,22 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '500',
-    width: '70%'
+    width: '85%'
+  },
+  udcontainer: {
+    flexDirection: 'row-reverse',
+    paddingTop: 10,
+    paddingHorizontal: 10,
+  },
+  contents: {
+    flex: 0.8,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   update: {
-    position: 'absolute',
-    right: 38
+    paddingHorizontal: 20,
   },
   delete: {
-    position: 'absolute',
-    right: 10
   },
   centeredView: {
     flex: 1,
@@ -284,7 +307,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     minWidth: 200,
     maxWidth: 220,
-    // paddingVertical: 30,
     paddingHorizontal: 10,
     alignItems: 'center',
     shadowColor: '#000',

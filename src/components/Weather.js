@@ -117,7 +117,7 @@ export default function Weather() {
 
   useState(() => {
     moment.locale('ko');
-    // loadHelperState();
+    loadHelperState();
     getWeather();
   }, []);
 
@@ -185,19 +185,6 @@ export default function Weather() {
                       </View>
                     </View>
                     <View style={styles.shortly}>
-                      <Text style={styles.detailsTinyText}>일출 / 일몰</Text>
-                      <View style={styles.details}>
-                        <Feather style={styles.tinyIcon} name="sunrise" size={20} color="white" /> 
-                        <Text style={styles.detailsText}>
-                          {moment(day.sunrise * 1000).format('HH:mm')}
-                        </Text>
-                        <MaterialCommunityIcons style={styles.tinyIcon} name="weather-sunset" size={20} color="white" /> 
-                        <Text style={styles.detailsText}>
-                          {moment(day.sunset * 1000).format('HH:mm')}
-                        </Text>
-                      </View>
-                    </View>
-                    <View style={styles.shortly}>
                       <Text style={styles.detailsTinyText}>풍향 / 풍속</Text>
                       <View style={styles.details}>
                         <FontAwesome style={{ ...styles.tinyIcon, transform: [{rotate: `${windDirection(day.wind_deg).rotate}deg`}] }} name="location-arrow" size={20} color="white" />
@@ -210,6 +197,21 @@ export default function Weather() {
                         </Text>
                       </View>
                     </View>
+                    <View style={styles.shortly}>
+                      <Text style={styles.detailsTinyText}>일출 / 일몰</Text>
+                      <View style={styles.details}>
+                        <Feather style={styles.tinyIcon} name="sunrise" size={20} color="white" /> 
+                        <Text style={styles.detailsText}>
+                          {moment(day.sunrise * 1000).format('HH:mm')}
+                        </Text>
+                        <MaterialCommunityIcons style={styles.tinyIcon} name="weather-sunset" size={20} color="white" /> 
+                        <Text style={styles.detailsText}>
+                          {moment(day.sunset * 1000).format('HH:mm')}
+                        </Text>
+                      </View>
+                    </View>
+
+
                     <View style={styles.shortly}>
                       <Text style={styles.detailsTinyText}>습도</Text>
                       <View style={{ ...styles.details, width:'50%' }}>

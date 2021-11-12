@@ -69,16 +69,26 @@ export default function News() {
       >
         {loading ?
           <ActivityIndicator color='white' size='large' style={{ marginTop: 20 }} /> :
-          response.data.articles.map(article => (
-            <View key={article.url} style={styles.content}>
-              {article.urlToImage && (
-                <Image source={{ uri: `${article.urlToImage}` }}
-                  style={{ width: 60, height: 60 }} />
-              )}
-              <View style={styles.titleContainer}>
-                <Text style={styles.title}>{article.title}</Text>
+          response.data.articles.map((article, index) => (
+            index === 0 ?
+              <View key={article.url} style={{ width: '100%', paddingHorizontal: 20, marginVertical: 10 }}>
+                {article.urlToImage && (
+                  <Image source={{ uri: `${article.urlToImage}` }}
+                    style={{ width: '100%', height: 100, marginBottom:10 }} />
+                )}
+                <View style={styles.titleContainer}>
+                  <Text style={{ color: 'white', fontSize:24 }}>{article.title}</Text>
+                </View>
+              </View>:
+              <View key={article.url} style={styles.content}>
+                {article.urlToImage && (
+                  <Image source={{ uri: `${article.urlToImage}` }}
+                    style={{ width: 60, height: 60 }} />
+                )}
+                <View style={styles.titleContainer}>
+                  <Text style={styles.title}>{article.title}</Text>
+                </View>
               </View>
-            </View>
           ))
         } 
       </ScrollView>
@@ -122,6 +132,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: 'white',
-    paddingHorizontal: 10
+    paddingHorizontal: 10,
+    fontSize: 16
   }
 });
