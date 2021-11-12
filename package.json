@@ -23,8 +23,7 @@
     "react-native-modal": "^12.1.0",
     "react-native-status-bar-height": "^2.6.0",
     "react-native-vector-icons": "^9.0.0",
-    "react-native-web": "0.17.1",
-    "uuid": "^3.4.0"
+    "react-native-web": "0.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"

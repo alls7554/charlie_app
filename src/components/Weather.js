@@ -57,6 +57,8 @@ export default function Weather() {
       { useGoogleMaps: false }
     );
 
+    console.log(location);
+
     setCity(location[0].city);
 
     const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alert&appid=${WEATHER_API_KEY}&units=metric`);
@@ -210,8 +212,6 @@ export default function Weather() {
                         </Text>
                       </View>
                     </View>
-
-
                     <View style={styles.shortly}>
                       <Text style={styles.detailsTinyText}>습도</Text>
                       <View style={{ ...styles.details, width:'50%' }}>

@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { theme } from '../common/color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { v4 as uuidv4 } from 'uuid';
 import { FontAwesome, Entypo } from '@expo/vector-icons';
 import moment from 'moment';
 moment.locale('ko');
@@ -64,7 +63,10 @@ export default function Todo() {
     const newTodos = {
       ...todos,
       [Date.now()]: {
-        text, working, date: moment(new Date()).format('yyyy-MM-DD(dd) hh:mm:ss'), done: false,
+        text,
+        working,
+        date: moment(new Date()).format('yyyy/MM/DD(dd) hh:mm:ss'),
+        done: false,
     }}
     setTodos(newTodos);
     await saveTodo(newTodos);
@@ -98,7 +100,7 @@ export default function Todo() {
   const updateTodo = async () => {
     const newTodos = {...todos}
     newTodos[updateKey].text = updateText
-    newTodos[updateKey].date = moment(new Date()).format('yyyy-MM-DD(dd) hh:mm:ss')
+    newTodos[updateKey].date = moment(new Date()).format('yyyy/MM/DD(dd) hh:mm:ss')
 
     setTodos(newTodos);
     setEditing(prev =>!prev)
@@ -122,11 +124,6 @@ export default function Todo() {
   useEffect(() => {
     saveState(working);
   }, [working]);
-
-
-  useEffect(() => {
-    console.log(todos);
-  }, [todos]);
 
   return (
     <View style={styles.container}>

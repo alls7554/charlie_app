@@ -13,7 +13,7 @@ import Todo from './Todo';
 import Info from './Info';
 import { theme } from '../common/color';
 import News from './News';
-import { Text, View,  TouchableOpacity } from 'react-native';
+import { Text, View,  TouchableOpacity, Image } from 'react-native';
 
 const MyTheme = {
   ...DarkTheme,
