@@ -57,8 +57,6 @@ export default function Weather() {
       { useGoogleMaps: false }
     );
 
-    console.log(location);
-
     setCity(location[0].city);
 
     const response = await fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=alert&appid=${WEATHER_API_KEY}&units=metric`);
