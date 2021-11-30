@@ -19,4 +19,4 @@ ios : https://apps.apple.com/kr/app/expo-go/id982107779
 ### 카메라를 통한 QR SCAN  
 ![Expo](https://user-images.githubusercontent.com/51731660/143963075-187076f7-6590-4146-9ec5-d18dd2f51c4a.png)
 
-[Expo 바로가기](exp://exp.host/@charliepark/CharlieApp)
+[Expo 바로가기](https://expo.dev/@charliepark/CharlieApp)
