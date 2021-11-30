@@ -16,6 +16,9 @@ Android : https://play.google.com/store/apps/details?id=host.exp.exponent&hl=ko&
 
 ios : https://apps.apple.com/kr/app/expo-go/id982107779
 
+아래의 QR Code는 안드로이드에서만 실행이 가능합니다.  
+Expo Go 기능상 IOS는 실행되지 않습니다.  
+
 ### 카메라를 통한 QR SCAN  
 ![Expo](https://user-images.githubusercontent.com/51731660/143963075-187076f7-6590-4146-9ec5-d18dd2f51c4a.png)
 
